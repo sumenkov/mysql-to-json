@@ -1,5 +1,7 @@
 package ru.sumenkov.mysqltojson.repository;
 
+import ru.sumenkov.mysqltojson.model.TableSQLModel;
+
 import java.sql.SQLException;
 
 public interface TableOperation {

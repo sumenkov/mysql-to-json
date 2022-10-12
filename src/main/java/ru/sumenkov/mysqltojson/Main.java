@@ -16,8 +16,8 @@ public class Main {
             System.out.println("Отключение от СУБД выполнено.");
 
         } catch (SQLException e) {
-            e.printStackTrace(); // обработка ошибок  DriverManager.getConnection
             System.out.println("Ошибка SQL !");
+            e.printStackTrace();
         }
     }
 }
