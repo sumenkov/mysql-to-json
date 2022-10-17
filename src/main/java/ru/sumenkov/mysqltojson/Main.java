@@ -29,7 +29,7 @@ public class Main {
                     new SimpleDateFormat("dd.MM.yyyy").parse("02.09.2022"),
                     100));
 
-            HashMap<Date, HashMap<Integer, HashMap<String, String>>> allLines = new HashMap<>();
+            HashMap<Date, HashMap<Integer, HashMap<String, Object>>> dateAndId = new HashMap<>();
 
             while (rs.next()) {
                 TableSQLModel line = new TableSQLModel(
@@ -43,21 +43,27 @@ public class Main {
                         rs.getInt(8),
                         rs.getInt(9));
 
-                if (allLines.containsKey(line.getDt1())){
-                    if (allLines.get(line.getDt1()).containsKey(line.getPtpId())){
-                        allLines.get(line.getDt1()).get(line.getPtpId()).put("ptpName", line.getPtpName());
-
+                if (dateAndId.containsKey(line.getDt1())){
+                    if (dateAndId.get(line.getDt1()).containsKey(line.getPtpId())){
+                        dateAndId.get(line.getDt1()).get(line.getPtpId()).put("ptpName", line.getPtpName());
+                        if (dateAndId.get(line.getDt1()).get(line.getPtpId()).containsKey(line.getRouteNum())) {
+                            dateAndId.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum());
+                        } else {
+                            dateAndId.get(line.getDt1()).get(line.getPtpId()).put(line.getRouteNum(), new HashMap<>());
+                        }
                     } else {
-                        allLines.get(line.getDt1()).put(line.getPtpId(), new HashMap<>());
-                        allLines.get(line.getDt1()).get(line.getPtpId()).put("ptpName", line.getPtpName());
+                        dateAndId.get(line.getDt1()).put(line.getPtpId(), new HashMap<>());
+                        dateAndId.get(line.getDt1()).get(line.getPtpId()).put("ptpName", line.getPtpName());
+                        dateAndId.get(line.getDt1()).get(line.getPtpId()).put(line.getRouteNum(), new HashMap<>());
                     }
                 } else {
-                    allLines.put(line.getDt1(), new HashMap<>());
-                    allLines.get(line.getDt1()).put(line.getPtpId(), new HashMap<>());
-                    allLines.get(line.getDt1()).get(line.getPtpId()).put("ptpName", line.getPtpName());
+                    dateAndId.put(line.getDt1(), new HashMap<>());
+                    dateAndId.get(line.getDt1()).put(line.getPtpId(), new HashMap<>());
+                    dateAndId.get(line.getDt1()).get(line.getPtpId()).put("ptpName", line.getPtpName());
+                    dateAndId.get(line.getDt1()).get(line.getPtpId()).put(line.getRouteNum(), new HashMap<>());
                 }
             }
-            System.out.println(allLines);
+            System.out.println(dateAndId);
 
             connection.close();
             System.out.println("Отключение от СУБД выполнено.");
