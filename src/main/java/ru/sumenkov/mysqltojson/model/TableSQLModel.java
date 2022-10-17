@@ -8,16 +8,16 @@ public class TableSQLModel {
     private int ptpId; // 2 column
     private Date dt1; // 4 column
     private String routeNum; // 7 column
-    private float tarif; // 9 column
-    private float prType; // 10 column, символов в этом поле не бывает, наверное лучше переделывать во float с точностью 2
-    private float summ; // 11 column
+    private double tarif; // 9 column
+    private double prType; // 10 column, символов в этом поле не бывает, наверное лучше переделывать во float с точностью 2
+    private double summ; // 11 column
     private int cnt; // 12 column
     private int qCnt; // 13 column
 
     public TableSQLModel() {
     }
 
-    public TableSQLModel(String ptpName,int ptpId, Date dt1, String routeNum, float tarif, float prType, float summ,
+    public TableSQLModel(String ptpName,int ptpId, Date dt1, String routeNum, double tarif, double prType, double summ,
                          int cnt, int qCnt) {
         this.ptpName = ptpName;
         this.ptpId = ptpId;
@@ -63,7 +63,7 @@ public class TableSQLModel {
         this.routeNum = routeNum;
     }
 
-    public float getTarif() {
+    public double getTarif() {
         return tarif;
     }
 
@@ -71,7 +71,7 @@ public class TableSQLModel {
         this.tarif = tarif;
     }
 
-    public float getPrType() {
+    public double getPrType() {
         return prType;
     }
 
@@ -79,7 +79,7 @@ public class TableSQLModel {
         this.prType = prType;
     }
 
-    public float getSumm() {
+    public double getSumm() {
         return summ;
     }
 
