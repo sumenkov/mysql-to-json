@@ -4,20 +4,20 @@ import java.util.Date;
 
 public class TableSQLModel {
     // описываем только те атрибуты, которые будем использовать (вся таблица не нужна)
-    private String ptpName;
-    private int ptpId;
-    private Date dt1;
-    private String routeNum;
-    private float tarif;
-    private String prType; // символов в этом полене бывает, наверное лучше переделывать во float с точностью 2
-    private float summ;
-    private int cnt;
-    private int qCnt;
+    private String ptpName; // 1 column
+    private int ptpId; // 2 column
+    private Date dt1; // 4 column
+    private String routeNum; // 7 column
+    private float tarif; // 9 column
+    private float prType; // 10 column, символов в этом поле не бывает, наверное лучше переделывать во float с точностью 2
+    private float summ; // 11 column
+    private int cnt; // 12 column
+    private int qCnt; // 13 column
 
     public TableSQLModel() {
     }
 
-    public TableSQLModel(String ptpName,int ptpId, Date dt1, String routeNum, float tarif, String prType, float summ,
+    public TableSQLModel(String ptpName,int ptpId, Date dt1, String routeNum, float tarif, float prType, float summ,
                          int cnt, int qCnt) {
         this.ptpName = ptpName;
         this.ptpId = ptpId;
@@ -71,11 +71,11 @@ public class TableSQLModel {
         this.tarif = tarif;
     }
 
-    public String getPrType() {
+    public float getPrType() {
         return prType;
     }
 
-    public void setPrType(String prType) {
+    public void setPrType(float prType) {
         this.prType = prType;
     }
 

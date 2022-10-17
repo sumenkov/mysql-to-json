@@ -1,17 +1,24 @@
 package ru.sumenkov.mysqltojson;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import ru.sumenkov.mysqltojson.repository.QueryReadTable;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class Main {
-    public static void main(String[] args) {
-        String connectionUrl = "jdbc:mysql://10.195.70.16:3306/db_trday";
+    public static void main(String[] args) throws IOException, org.json.simple.parser.ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject config = (JSONObject) parser.parse(new FileReader("config.json"));
+
+        String connectionUrl = String.format("jdbc:mysql://%s:%s/%s", config.get("ip"), config.get("port"), config.get("db"));
 
         try {
-            Connection connection = DriverManager.getConnection(connectionUrl, "pobezhimov", "QfxWjbLD");
+            Connection connection = DriverManager.getConnection(connectionUrl, (String) config.get("login"), (String) config.get("password"));
             System.out.println("Соединение с СУБД выполнено.");
 
             Statement stmt = connection.createStatement();
