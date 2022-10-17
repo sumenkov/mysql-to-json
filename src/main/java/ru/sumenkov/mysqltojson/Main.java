@@ -29,7 +29,7 @@ public class Main {
                     new SimpleDateFormat("dd.MM.yyyy").parse("01.09.2022"),
                     new SimpleDateFormat("dd.MM.yyyy").parse("02.09.2022")));
 
-            HashMap<Date, HashMap<Integer, HashMap<String, Object>>> dateAndId = new HashMap<>();
+            HashMap<Date, HashMap<Integer, HashMap<String, Object>>> allLines = new HashMap<>();
 
             while (rs.next()) {
                 TableSQLModel line = new TableSQLModel(
@@ -43,58 +43,58 @@ public class Main {
                         rs.getInt(8),
                         rs.getInt(9));
 
-                if (dateAndId.containsKey(line.getDt1())){
-                    if (dateAndId.get(line.getDt1()).containsKey(line.getPtpId())){
-                        dateAndId.get(line.getDt1()).get(line.getPtpId()).put("ptpName", line.getPtpName());
-                        if (dateAndId.get(line.getDt1()).get(line.getPtpId()).containsKey(line.getRouteNum())) {
-                            HashMap<Double, Object> nextMap = (HashMap<Double, Object>) dateAndId.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum());
+                if (allLines.containsKey(line.getDt1())){
+                    if (allLines.get(line.getDt1()).containsKey(line.getPtpId())){
+                        allLines.get(line.getDt1()).get(line.getPtpId()).put("ptpName", line.getPtpName());
+                        if (allLines.get(line.getDt1()).get(line.getPtpId()).containsKey(line.getRouteNum())) {
+                            HashMap<Double, Object> nextMap = (HashMap<Double, Object>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum());
                             if (nextMap.containsKey(line.getPrType())) {
-                                HashMap<String, Object> nextNextMap = (HashMap<String, Object>) ((HashMap<?, ?>) dateAndId.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum())).get(line.getPrType());
+                                HashMap<String, Object> nextNextMap = (HashMap<String, Object>) ((HashMap<?, ?>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum())).get(line.getPrType());
                                 nextNextMap.put("summ", line.getSumm());
                                 nextNextMap.put("cnt", line.getCnt());
                                 nextNextMap.put("qcnt", line.getQCnt());
                             } else {
                                 nextMap.put(line.getPrType(), new HashMap<>());
-                                HashMap<String, Object> nextNextMap = (HashMap<String, Object>) ((HashMap<?, ?>) dateAndId.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum())).get(line.getPrType());
+                                HashMap<String, Object> nextNextMap = (HashMap<String, Object>) ((HashMap<?, ?>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum())).get(line.getPrType());
                                 nextNextMap.put("summ", line.getSumm());
                                 nextNextMap.put("cnt", line.getCnt());
                                 nextNextMap.put("qcnt", line.getQCnt());
                             }
                         } else {
-                            dateAndId.get(line.getDt1()).get(line.getPtpId()).put(line.getRouteNum(), new HashMap<>());
-                            HashMap<Double, Object> nextMap = (HashMap<Double, Object>) dateAndId.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum());
+                            allLines.get(line.getDt1()).get(line.getPtpId()).put(line.getRouteNum(), new HashMap<>());
+                            HashMap<Double, Object> nextMap = (HashMap<Double, Object>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum());
                             nextMap.put(line.getPrType(), new HashMap<>());
-                            HashMap<String, Object> nextNextMap = (HashMap<String, Object>) ((HashMap<?, ?>) dateAndId.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum())).get(line.getPrType());
+                            HashMap<String, Object> nextNextMap = (HashMap<String, Object>) ((HashMap<?, ?>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum())).get(line.getPrType());
                             nextNextMap.put("summ", line.getSumm());
                             nextNextMap.put("cnt", line.getCnt());
                             nextNextMap.put("qcnt", line.getQCnt());
                         }
                     } else {
-                        dateAndId.get(line.getDt1()).put(line.getPtpId(), new HashMap<>());
-                        dateAndId.get(line.getDt1()).get(line.getPtpId()).put("ptpName", line.getPtpName());
-                        dateAndId.get(line.getDt1()).get(line.getPtpId()).put(line.getRouteNum(), new HashMap<>());
-                        HashMap<Double, Object> nextMap = (HashMap<Double, Object>) dateAndId.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum());
+                        allLines.get(line.getDt1()).put(line.getPtpId(), new HashMap<>());
+                        allLines.get(line.getDt1()).get(line.getPtpId()).put("ptpName", line.getPtpName());
+                        allLines.get(line.getDt1()).get(line.getPtpId()).put(line.getRouteNum(), new HashMap<>());
+                        HashMap<Double, Object> nextMap = (HashMap<Double, Object>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum());
                         nextMap.put(line.getPrType(), new HashMap<>());
-                        HashMap<String, Object> nextNextMap = (HashMap<String, Object>) ((HashMap<?, ?>) dateAndId.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum())).get(line.getPrType());
+                        HashMap<String, Object> nextNextMap = (HashMap<String, Object>) ((HashMap<?, ?>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum())).get(line.getPrType());
                         nextNextMap.put("summ", line.getSumm());
                         nextNextMap.put("cnt", line.getCnt());
                         nextNextMap.put("qcnt", line.getQCnt());
                     }
                 } else {
-                    dateAndId.put(line.getDt1(), new HashMap<>());
-                    dateAndId.get(line.getDt1()).put(line.getPtpId(), new HashMap<>());
-                    dateAndId.get(line.getDt1()).get(line.getPtpId()).put("ptpName", line.getPtpName());
-                    dateAndId.get(line.getDt1()).get(line.getPtpId()).put(line.getRouteNum(), new HashMap<>());
-                    HashMap<Double, Object> nextMap = (HashMap<Double, Object>) dateAndId.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum());
+                    allLines.put(line.getDt1(), new HashMap<>());
+                    allLines.get(line.getDt1()).put(line.getPtpId(), new HashMap<>());
+                    allLines.get(line.getDt1()).get(line.getPtpId()).put("ptpName", line.getPtpName());
+                    allLines.get(line.getDt1()).get(line.getPtpId()).put(line.getRouteNum(), new HashMap<>());
+                    HashMap<Double, Object> nextMap = (HashMap<Double, Object>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum());
                     nextMap.put(line.getPrType(), new HashMap<>());
-                    HashMap<String, Object> nextNextMap = (HashMap<String, Object>) ((HashMap<?, ?>) dateAndId.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum())).get(line.getPrType());
+                    HashMap<String, Object> nextNextMap = (HashMap<String, Object>) ((HashMap<?, ?>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum())).get(line.getPrType());
                     nextNextMap.put("summ", line.getSumm());
                     nextNextMap.put("cnt", line.getCnt());
                     nextNextMap.put("qcnt", line.getQCnt());
                 }
             }
 
-            JSONObject json = new JSONObject(dateAndId);
+            JSONObject json = new JSONObject(allLines);
 
             FileWriter file = new FileWriter("readSQL.json");
             file.write(json.toString(4));
