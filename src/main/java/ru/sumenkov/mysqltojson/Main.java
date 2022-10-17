@@ -6,6 +6,7 @@ import ru.sumenkov.mysqltojson.model.TableSQLModel;
 import ru.sumenkov.mysqltojson.repository.QueryReadTable;
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
 import java.text.ParseException;
@@ -26,8 +27,7 @@ public class Main {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(new QueryReadTable().readDatePeriod(
                     new SimpleDateFormat("dd.MM.yyyy").parse("01.09.2022"),
-                    new SimpleDateFormat("dd.MM.yyyy").parse("02.09.2022"),
-                    100));
+                    new SimpleDateFormat("dd.MM.yyyy").parse("02.09.2022")));
 
             HashMap<Date, HashMap<Integer, HashMap<String, Object>>> dateAndId = new HashMap<>();
 
@@ -93,7 +93,12 @@ public class Main {
                     nextNextMap.put("qcnt", line.getQCnt());
                 }
             }
-            System.out.println(dateAndId);
+
+            JSONObject json = new JSONObject(dateAndId);
+
+            FileWriter file = new FileWriter("readSQL.json");
+            file.write(json.toString(4));
+            file.flush();
 
             connection.close();
             System.out.println("Отключение от СУБД выполнено.");
