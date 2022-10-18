@@ -1,6 +1,5 @@
 package ru.sumenkov.mysqltojson;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import ru.sumenkov.mysqltojson.model.InitialModel;
@@ -13,10 +12,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -31,10 +27,9 @@ public class Main {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(new QueryReadTable().readDatePeriod(
                     new SimpleDateFormat("dd.MM.yyyy").parse("01.09.2022"),
-                    new SimpleDateFormat("dd.MM.yyyy").parse("02.09.2022"),
-                    10));
-            List<HashMap<Date, Object>> allLines = new ArrayList<>();
+                    new SimpleDateFormat("dd.MM.yyyy").parse("02.09.2022"), 10));
 
+            List<InitialModel> allLines = new ArrayList<>();
             while (rs.next()) {
                 InitialModel line = new InitialModel(
                         rs.getString(1).replace("\"", ""),
@@ -46,10 +41,10 @@ public class Main {
                         rs.getDouble(7),
                         rs.getInt(8),
                         rs.getInt(9));
-                allLines.add(new ConverterToJsonFormat().convertObject(line));
+                allLines.add(line);
             }
 
-            JSONArray json = new JSONArray(allLines);
+            JSONObject json = new JSONObject(new ConverterToJsonFormat().convertArray(allLines));
 
             FileWriter file = new FileWriter("readSQL.json");
             file.write(json.toString(4));
