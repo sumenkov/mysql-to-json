@@ -1,9 +1,11 @@
 package ru.sumenkov.mysqltojson;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import ru.sumenkov.mysqltojson.model.TableSQLModel;
+import ru.sumenkov.mysqltojson.model.InitialModel;
 import ru.sumenkov.mysqltojson.repository.QueryReadTable;
+import ru.sumenkov.mysqltojson.service.ConverterToJsonFormat;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -11,8 +13,10 @@ import java.io.IOException;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -27,12 +31,12 @@ public class Main {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(new QueryReadTable().readDatePeriod(
                     new SimpleDateFormat("dd.MM.yyyy").parse("01.09.2022"),
-                    new SimpleDateFormat("dd.MM.yyyy").parse("02.09.2022")));
-
-            HashMap<Date, HashMap<Integer, HashMap<String, Object>>> allLines = new HashMap<>();
+                    new SimpleDateFormat("dd.MM.yyyy").parse("02.09.2022"),
+                    10));
+            List<HashMap<Date, Object>> allLines = new ArrayList<>();
 
             while (rs.next()) {
-                TableSQLModel line = new TableSQLModel(
+                InitialModel line = new InitialModel(
                         rs.getString(1).replace("\"", ""),
                         rs.getInt(2),
                         rs.getDate(3),
@@ -42,59 +46,10 @@ public class Main {
                         rs.getDouble(7),
                         rs.getInt(8),
                         rs.getInt(9));
-
-                if (allLines.containsKey(line.getDt1())){
-                    if (allLines.get(line.getDt1()).containsKey(line.getPtpId())){
-                        allLines.get(line.getDt1()).get(line.getPtpId()).put("ptpName", line.getPtpName());
-                        if (allLines.get(line.getDt1()).get(line.getPtpId()).containsKey(line.getRouteNum())) {
-                            HashMap<Double, Object> nextMap = (HashMap<Double, Object>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum());
-                            if (nextMap.containsKey(line.getPrType())) {
-                                HashMap<String, Object> nextNextMap = (HashMap<String, Object>) ((HashMap<?, ?>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum())).get(line.getPrType());
-                                nextNextMap.put("summ", line.getSumm());
-                                nextNextMap.put("cnt", line.getCnt());
-                                nextNextMap.put("qcnt", line.getQCnt());
-                            } else {
-                                nextMap.put(line.getPrType(), new HashMap<>());
-                                HashMap<String, Object> nextNextMap = (HashMap<String, Object>) ((HashMap<?, ?>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum())).get(line.getPrType());
-                                nextNextMap.put("summ", line.getSumm());
-                                nextNextMap.put("cnt", line.getCnt());
-                                nextNextMap.put("qcnt", line.getQCnt());
-                            }
-                        } else {
-                            allLines.get(line.getDt1()).get(line.getPtpId()).put(line.getRouteNum(), new HashMap<>());
-                            HashMap<Double, Object> nextMap = (HashMap<Double, Object>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum());
-                            nextMap.put(line.getPrType(), new HashMap<>());
-                            HashMap<String, Object> nextNextMap = (HashMap<String, Object>) ((HashMap<?, ?>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum())).get(line.getPrType());
-                            nextNextMap.put("summ", line.getSumm());
-                            nextNextMap.put("cnt", line.getCnt());
-                            nextNextMap.put("qcnt", line.getQCnt());
-                        }
-                    } else {
-                        allLines.get(line.getDt1()).put(line.getPtpId(), new HashMap<>());
-                        allLines.get(line.getDt1()).get(line.getPtpId()).put("ptpName", line.getPtpName());
-                        allLines.get(line.getDt1()).get(line.getPtpId()).put(line.getRouteNum(), new HashMap<>());
-                        HashMap<Double, Object> nextMap = (HashMap<Double, Object>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum());
-                        nextMap.put(line.getPrType(), new HashMap<>());
-                        HashMap<String, Object> nextNextMap = (HashMap<String, Object>) ((HashMap<?, ?>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum())).get(line.getPrType());
-                        nextNextMap.put("summ", line.getSumm());
-                        nextNextMap.put("cnt", line.getCnt());
-                        nextNextMap.put("qcnt", line.getQCnt());
-                    }
-                } else {
-                    allLines.put(line.getDt1(), new HashMap<>());
-                    allLines.get(line.getDt1()).put(line.getPtpId(), new HashMap<>());
-                    allLines.get(line.getDt1()).get(line.getPtpId()).put("ptpName", line.getPtpName());
-                    allLines.get(line.getDt1()).get(line.getPtpId()).put(line.getRouteNum(), new HashMap<>());
-                    HashMap<Double, Object> nextMap = (HashMap<Double, Object>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum());
-                    nextMap.put(line.getPrType(), new HashMap<>());
-                    HashMap<String, Object> nextNextMap = (HashMap<String, Object>) ((HashMap<?, ?>) allLines.get(line.getDt1()).get(line.getPtpId()).get(line.getRouteNum())).get(line.getPrType());
-                    nextNextMap.put("summ", line.getSumm());
-                    nextNextMap.put("cnt", line.getCnt());
-                    nextNextMap.put("qcnt", line.getQCnt());
-                }
+                allLines.add(new ConverterToJsonFormat().convertObject(line));
             }
 
-            JSONObject json = new JSONObject(allLines);
+            JSONArray json = new JSONArray(allLines);
 
             FileWriter file = new FileWriter("readSQL.json");
             file.write(json.toString(4));

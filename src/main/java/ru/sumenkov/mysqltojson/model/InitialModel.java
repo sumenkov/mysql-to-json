@@ -2,23 +2,23 @@ package ru.sumenkov.mysqltojson.model;
 
 import java.util.Date;
 
-public class TableSQLModel {
+public class InitialModel {
     // описываем только те атрибуты, которые будем использовать (вся таблица не нужна)
     private String ptpName; // 1 column
     private int ptpId; // 2 column
     private Date dt1; // 4 column
     private String routeNum; // 7 column
     private double tarif; // 9 column
-    private double prType; // 10 column, символов в этом поле не бывает, наверное лучше переделывать во float с точностью 2
+    private double prType; // 10 column
     private double summ; // 11 column
     private int cnt; // 12 column
     private int qCnt; // 13 column
 
-    public TableSQLModel() {
+    public InitialModel() {
     }
 
-    public TableSQLModel(String ptpName,int ptpId, Date dt1, String routeNum, double tarif, double prType, double summ,
-                         int cnt, int qCnt) {
+    public InitialModel(String ptpName, int ptpId, Date dt1, String routeNum, double tarif, double prType, double summ,
+                        int cnt, int qCnt) {
         this.ptpName = ptpName;
         this.ptpId = ptpId;
         this.dt1 = dt1;
