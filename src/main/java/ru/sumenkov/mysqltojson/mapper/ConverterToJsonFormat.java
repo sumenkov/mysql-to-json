@@ -1,4 +1,4 @@
-package ru.sumenkov.mysqltojson.service;
+package ru.sumenkov.mysqltojson.mapper;
 
 import ru.sumenkov.mysqltojson.model.InitialModel;
 

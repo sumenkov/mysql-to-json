@@ -3,8 +3,8 @@ package ru.sumenkov.mysqltojson;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import ru.sumenkov.mysqltojson.model.InitialModel;
-import ru.sumenkov.mysqltojson.repository.QueryReadTable;
-import ru.sumenkov.mysqltojson.service.ConverterToJsonFormat;
+import ru.sumenkov.mysqltojson.repository.impl.TableOperationImpl;
+import ru.sumenkov.mysqltojson.mapper.ConverterToJsonFormat;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -28,7 +28,7 @@ public class Main {
 //            ResultSet rs = stmt.executeQuery(new QueryReadTable().readDatePeriod(
 //                    new SimpleDateFormat("dd.MM.yyyy").parse("01.09.2022"),
 //                    new SimpleDateFormat("dd.MM.yyyy").parse("02.09.2022"), 10));
-            ResultSet rs = stmt.executeQuery(new QueryReadTable().readOneMonth(new SimpleDateFormat("dd.MM.yyyy").parse("01.09.2022"), 10));
+            ResultSet rs = stmt.executeQuery(new TableOperationImpl().readOneMonth(new SimpleDateFormat("dd.MM.yyyy").parse("01.09.2022"), 10));
 
             List<InitialModel> allLines = new ArrayList<>();
             while (rs.next()) {
