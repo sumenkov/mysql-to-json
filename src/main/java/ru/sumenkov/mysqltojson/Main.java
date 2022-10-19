@@ -25,9 +25,10 @@ public class Main {
             System.out.println("Соединение с СУБД выполнено.");
 
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(new QueryReadTable().readDatePeriod(
-                    new SimpleDateFormat("dd.MM.yyyy").parse("01.09.2022"),
-                    new SimpleDateFormat("dd.MM.yyyy").parse("02.09.2022"), 10));
+//            ResultSet rs = stmt.executeQuery(new QueryReadTable().readDatePeriod(
+//                    new SimpleDateFormat("dd.MM.yyyy").parse("01.09.2022"),
+//                    new SimpleDateFormat("dd.MM.yyyy").parse("02.09.2022"), 10));
+            ResultSet rs = stmt.executeQuery(new QueryReadTable().readOneMonth(new SimpleDateFormat("dd.MM.yyyy").parse("01.09.2022"), 10));
 
             List<InitialModel> allLines = new ArrayList<>();
             while (rs.next()) {
