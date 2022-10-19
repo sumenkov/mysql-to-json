@@ -1,11 +1,14 @@
-package ru.sumenkov.mysqltojson.mapper;
+package ru.sumenkov.mysqltojson.mapper.impl;
 
+import org.json.JSONObject;
+import ru.sumenkov.mysqltojson.mapper.JsonMapper;
 import ru.sumenkov.mysqltojson.model.InitialModel;
 
 import java.util.*;
 
-public class ConverterToJsonFormat {
-    public HashMap<Date, Object> convertObject(InitialModel line) {
+public class JsonMapperImpl implements JsonMapper {
+    @Override
+    public JSONObject convertObject(InitialModel line) {
         Integer ptpId = line.getPtpId();
 
         HashMap<Integer, HashMap<Object, Object>> averageLevel = new HashMap<>();
@@ -16,10 +19,11 @@ public class ConverterToJsonFormat {
 
         HashMap<Date, Object> result = new HashMap<>();
         result.put(line.getDt1(), averageLevel);
-        return result;
+        return new JSONObject(result);
     }
 
-    public HashMap<Date, HashMap<Integer, HashMap<Object, Object>>> convertArray(List<InitialModel> allLines) {
+    @Override
+    public JSONObject convertArray(List<InitialModel> allLines) {
         HashMap<Date, HashMap<Integer, HashMap<Object, Object>>> result = new HashMap<>();
 
         for (InitialModel line: allLines) {
@@ -67,7 +71,7 @@ public class ConverterToJsonFormat {
                 }
             }
         }
-        return result;
+        return new JSONObject(result);
     }
 
     private HashMap<Double, HashMap<Object, Object>> lowerLevel(InitialModel line)  {

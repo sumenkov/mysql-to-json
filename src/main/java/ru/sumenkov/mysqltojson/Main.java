@@ -1,62 +1,41 @@
 package ru.sumenkov.mysqltojson;
 
+import ru.sumenkov.mysqltojson.mapper.impl.DataMapperImpl;
+import ru.sumenkov.mysqltojson.repository.impl.TableOperationImpl;
+import ru.sumenkov.mysqltojson.mapper.impl.JsonMapperImpl;
+
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import ru.sumenkov.mysqltojson.model.InitialModel;
-import ru.sumenkov.mysqltojson.repository.impl.TableOperationImpl;
-import ru.sumenkov.mysqltojson.mapper.ConverterToJsonFormat;
 
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
 
 public class Main {
+    private static final Logger log = Logger.getLogger(Main.class.getName());
     public static void main(String[] args) {
         try {
             JSONTokener tokener = new JSONTokener(new FileReader("config.json"));
             JSONObject config = new JSONObject(tokener);
 
-                    String connectionUrl = String.format("jdbc:mysql://%s:%s/%s", config.get("ip"), config.get("port"), config.get("db"));
-            Connection connection = DriverManager.getConnection(connectionUrl, (String) config.get("login"), (String) config.get("password"));
-            System.out.println("Соединение с СУБД выполнено.");
+            String connectionUrl = String.format("jdbc:mysql://%s:%s/%s", config.get("ip"), config.get("port"), config.get("db"));
+            Connection conn = DriverManager.getConnection(connectionUrl, (String) config.get("login"), (String) config.get("password"));
 
-            Statement stmt = connection.createStatement();
-//            ResultSet rs = stmt.executeQuery(new QueryReadTable().readDatePeriod(
-//                    new SimpleDateFormat("dd.MM.yyyy").parse("01.09.2022"),
-//                    new SimpleDateFormat("dd.MM.yyyy").parse("02.09.2022"), 10));
-            ResultSet rs = stmt.executeQuery(new TableOperationImpl().readOneMonth(new SimpleDateFormat("dd.MM.yyyy").parse("01.09.2022"), 10));
+            Date inputDate = new SimpleDateFormat("dd.MM.yyyy").parse("01.10.2022");
+            JSONObject json = new JsonMapperImpl().convertArray(new TableOperationImpl(conn, new DataMapperImpl()).readOneDay(inputDate));
 
-            List<InitialModel> allLines = new ArrayList<>();
-            while (rs.next()) {
-                InitialModel line = new InitialModel(
-                        rs.getString(1).replace("\"", ""),
-                        rs.getInt(2),
-                        rs.getDate(3),
-                        rs.getString(4),
-                        rs.getDouble(5),
-                        rs.getDouble(6),
-                        rs.getDouble(7),
-                        rs.getInt(8),
-                        rs.getInt(9));
-                allLines.add(line);
+            try (FileWriter file = new FileWriter("readSQL.json")) {
+                file.write(json.toString(4));
+                file.flush();
             }
-
-            JSONObject json = new JSONObject(new ConverterToJsonFormat().convertArray(allLines));
-
-            FileWriter file = new FileWriter("readSQL.json");
-            file.write(json.toString(4));
-            file.flush();
-
-            connection.close();
-            System.out.println("Отключение от СУБД выполнено.");
-
         } catch (SQLException e) {
-            System.out.println("Ошибка SQL !");
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Fail open connect", e);
         } catch (ParseException | IOException e) {
             throw new RuntimeException(e);
         }
