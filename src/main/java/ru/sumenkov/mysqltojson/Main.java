@@ -61,13 +61,18 @@ public class Main {
             log.log(Level.SEVERE, "Fail open connect", e);
         } catch (org.apache.commons.cli.ParseException e) {
             log.log(Level.SEVERE, "Fail parse options", e);
-        } catch (IOException | ParseException e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            log.log(Level.SEVERE, "Fail read config", e);
         }
     }
 
-    private static Date dateMapper(String date) throws ParseException {
-        return new SimpleDateFormat("dd.MM.yyyy").parse(date);
+    private static Date dateMapper(String date) {
+        try {
+            return new SimpleDateFormat("dd.MM.yyyy").parse(date);
+        } catch (ParseException e) {
+            log.log(Level.SEVERE, "Fail date mapper", e);
+            return new Date();
+        }
     }
 
     private static void saveFile(JSONObject json, String nameFile) {
@@ -75,7 +80,7 @@ public class Main {
             file.write(json.toString(4));
             file.flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.log(Level.SEVERE, "Fail save file", e);
         }
     }
 }
