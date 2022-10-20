@@ -22,15 +22,8 @@ public class Main {
     private static final Logger log = Logger.getLogger(Main.class.getName());
     public static void main(String[] args) {
         try {
-            Options options = new LaunchOptions().launchOptions();
-
-            if (args.length == 0){
-                HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp("mysql-to-json", options, true);
-                System.exit(0);
-            }
-
             CommandLineParser commandLineParser = new DefaultParser();
+            Options options = new LaunchOptions().launchOptions();
             CommandLine cl = commandLineParser.parse(options, args);
 
             JSONTokener tokener = new JSONTokener(new FileReader("config.json"));
@@ -53,8 +46,13 @@ public class Main {
                 nameFile = cl.getOptionValue("readmonth");
                 json = jsonMapper.convertArray(tableOperation.readOneMonth(dateMapper(nameFile)));
             } else if (cl.hasOption("readperiod")) {
-                nameFile = cl.getOptionValue("readperiod");                             // формат ввода?????
-                json = jsonMapper.convertArray(tableOperation.readDatePeriod(dateMapper(nameFile.split("-")[0]), dateMapper(nameFile.split("-")[1])));
+                nameFile = cl.getOptionValue("readperiod");
+                json = jsonMapper.convertArray(tableOperation.readDatePeriod(
+                        dateMapper(nameFile.split("-")[0]), dateMapper(nameFile.split("-")[1])));
+            } else {
+                HelpFormatter formatter = new HelpFormatter();
+                formatter.printHelp("mysql-to-json", options, true);
+                System.exit(0);
             }
 
             saveFile(json, nameFile);
@@ -72,8 +70,8 @@ public class Main {
         return new SimpleDateFormat("dd.MM.yyyy").parse(date);
     }
 
-    private static void saveFile(JSONObject json, String name) {
-        try (FileWriter file = new FileWriter("readSQL.json")) {
+    private static void saveFile(JSONObject json, String nameFile) {
+        try (FileWriter file = new FileWriter(String.format("%s.json", nameFile))) {
             file.write(json.toString(4));
             file.flush();
         } catch (IOException e) {
