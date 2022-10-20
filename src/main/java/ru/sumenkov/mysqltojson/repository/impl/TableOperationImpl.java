@@ -31,59 +31,20 @@ public class TableOperationImpl implements TableOperation {
     }
 
     @Override
-    public List<InitialModel> readTable(String name, int numberOfLines) {
-        return readTable(name, 0, numberOfLines);
-    }
-
-    @Override
-    public List<InitialModel> readTable(String name, int firstLine, int numberOfLines) {
-        String query = String.format("SELECT %s FROM `%s` LIMIT %d, %d", COLUMNS, name, firstLine, numberOfLines);
-        return parseAll(query);
-    }
-    @Override
     public List<InitialModel> readOneDay(Date date) {
         String query = String.format("SELECT %s FROM `%d` WHERE dt1='%s'", COLUMNS, getYear(date), getSfd(date));
         return parseAll(query);
     }
     @Override
-    public List<InitialModel> readOneDay(Date date, int numberOfLines) {
-        return readOneDay(date, 0, numberOfLines);
-    }
-    @Override
-    public List<InitialModel> readOneDay(Date date, int firstLine, int numberOfLines) {
-        String query = String.format("SELECT %s FROM `%d` WHERE dt1='%s' LIMIT %d, %d",
-                COLUMNS, getYear(date), getSfd(date), firstLine, numberOfLines);
-        return parseAll(query);
-    }
-    @Override
     public List<InitialModel> readOneMonth(Date date) {
-        String query = String.format("SELECT %s FROM `%d` WHERE dt1 LIKE '%s'", COLUMNS, getYear(date), getSfdM(date));
-        return parseAll(query);
-    }
-    @Override
-    public List<InitialModel> readOneMonth(Date date, int numberOfLines) {
-        return readOneMonth(date, 0 ,numberOfLines);
-    }
-    @Override
-    public List<InitialModel> readOneMonth(Date date, int firstLine, int numberOfLines) {
-        String query = String.format("SELECT %s FROM `%d` WHERE dt1 LIKE '%s' LIMIT %d, %d",
-                COLUMNS, getYear(date), getSfdM(date), firstLine, numberOfLines);
+        String query = String.format("SELECT %s FROM `%d` WHERE dt1 LIKE '%s'", COLUMNS, getYear(date),
+                new SimpleDateFormat("yyyy-MM-%").format(date));
         return parseAll(query);
     }
     @Override
     public List<InitialModel> readDatePeriod(Date dateStart, Date dateEnd) {
         String query = String.format("SELECT %s FROM `%d` WHERE dt1 BETWEEN '%s' and '%s'",
                 COLUMNS, getYear(dateStart), getSfd(dateStart), getSfd(dateEnd));
-        return parseAll(query);
-    }
-    @Override
-    public List<InitialModel> readDatePeriod(Date dateStart, Date dateEnd, int numberOfLines) {
-        return readDatePeriod(dateStart, dateEnd, 0, numberOfLines);
-    }
-    @Override
-    public List<InitialModel> readDatePeriod(Date dateStart, Date dateEnd, int firstLine, int numberOfLines) {
-        String query = String.format("SELECT %s FROM `%d` WHERE dt1 BETWEEN '%s' and '%s' LIMIT %d, %d",
-                COLUMNS, getYear(dateStart), getSfd(dateStart), getSfd(dateEnd), firstLine, numberOfLines);
         return parseAll(query);
     }
     private int getYear(Date date) {
@@ -94,10 +55,6 @@ public class TableOperationImpl implements TableOperation {
 
     private String getSfd(Date date) {
         return new SimpleDateFormat("yyyy-MM-dd").format(date);
-    }
-
-    private String getSfdM(Date date) {
-        return new SimpleDateFormat("yyyy-MM-%").format(date);
     }
 
     private List<InitialModel> parseAll(String query) {
