@@ -1,6 +1,6 @@
 package ru.sumenkov.mysqltojson.repository.impl;
 
-import ru.sumenkov.mysqltojson.mapper.impl.DataMapperImpl;
+import ru.sumenkov.mysqltojson.mapper.DataMapper;
 import ru.sumenkov.mysqltojson.model.InitialModel;
 import ru.sumenkov.mysqltojson.repository.TableOperation;
 
@@ -16,12 +16,12 @@ import java.util.logging.Logger;
 public class TableOperationImpl implements TableOperation {
     private static final Logger LOG = Logger.getLogger(TableOperationImpl.class.getName());
     private final Connection conn;
-    private  final DataMapperImpl dataMapperImpl;
+    private  final DataMapper dataMapper;
     private final String COLUMNS = "PTP_NAME,PTP_ID, DT1, ROUTE_NUM, TARIF, PRTYPE, SUMM, CNT, QCNT";
 
-    public TableOperationImpl(Connection conn, DataMapperImpl dataMapperImpl) {
+    public TableOperationImpl(Connection conn, DataMapper dataMapper) {
         this.conn = conn;
-        this.dataMapperImpl = dataMapperImpl;
+        this.dataMapper = dataMapper;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class TableOperationImpl implements TableOperation {
             List<InitialModel> resul = new ArrayList<>();
 
             while (rs.next()) {
-                resul.add(dataMapperImpl.map(rs));
+                resul.add(dataMapper.map(rs));
             }
             return resul;
         } catch (SQLException e) {
