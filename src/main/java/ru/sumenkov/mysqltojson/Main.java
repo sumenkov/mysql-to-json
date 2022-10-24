@@ -1,7 +1,9 @@
 package ru.sumenkov.mysqltojson;
 
 import org.apache.commons.cli.*;
+import ru.sumenkov.mysqltojson.mapper.JsonMapper;
 import ru.sumenkov.mysqltojson.mapper.impl.DataMapperImpl;
+import ru.sumenkov.mysqltojson.repository.TableOperation;
 import ru.sumenkov.mysqltojson.repository.impl.TableOperationImpl;
 import ru.sumenkov.mysqltojson.mapper.impl.JsonMapperImpl;
 
@@ -32,8 +34,8 @@ public class Main {
             Connection conn = DriverManager.getConnection(connectionUrl, (String) config.get("login"), (String) config.get("password"));
 
             JSONObject json = new JSONObject();
-            JsonMapperImpl jsonMapper = new JsonMapperImpl();
-            TableOperationImpl tableOperation = new TableOperationImpl(conn, new DataMapperImpl());
+            JsonMapper jsonMapper = new JsonMapperImpl();
+            TableOperation tableOperation = new TableOperationImpl(conn, new DataMapperImpl());
             String nameFile = null;
 
             if (cl.hasOption("readtable")) {

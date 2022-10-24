@@ -18,8 +18,7 @@
 
         <!-- dependency versions -->
         <commons-cli.version>1.5.0</commons-cli.version>
-<!--        <json-simple.version>1.1.1</json-simple.version>-->
-        <json.version>20211205</json.version>
+        <json.version>20220924</json.version>
         <mysql-connector-java.version>8.0.30</mysql-connector-java.version>
 
         <!-- plugin versions -->
@@ -69,12 +68,6 @@
             <artifactId>commons-cli</artifactId>
             <version>${commons-cli.version}</version>
         </dependency>
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>com.googlecode.json-simple</groupId>-->
-<!--            <artifactId>json-simple</artifactId>-->
-<!--            <version>${json-simple.version}</version>-->
-<!--        </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.json/json -->
         <dependency>
             <groupId>org.json</groupId>
