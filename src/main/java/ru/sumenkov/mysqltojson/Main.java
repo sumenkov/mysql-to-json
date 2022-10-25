@@ -26,6 +26,9 @@ public class Main {
         try {
             CommandLineParser commandLineParser = new DefaultParser();
             Options options = new LaunchOptions().launchOptions();
+
+            if (args.length == 0) helper(options);
+
             CommandLine cl = commandLineParser.parse(options, args);
 
             JSONTokener tokener = new JSONTokener(new FileReader("config.json"));
@@ -52,9 +55,7 @@ public class Main {
                 json = jsonMapper.convertArray(tableOperation.readDatePeriod(
                         dateMapper(nameFile.split("-")[0]), dateMapper(nameFile.split("-")[1])));
             } else {
-                HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp("mysql-to-json", options, true);
-                System.exit(0);
+                helper(options);
             }
 
             saveFile(json, nameFile);
@@ -84,5 +85,11 @@ public class Main {
         } catch (IOException e) {
             log.log(Level.SEVERE, "Fail save file", e);
         }
+    }
+
+    private static void helper(Options options){
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("mysql-to-json", options, true);
+        System.exit(0);
     }
 }
