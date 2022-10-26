@@ -65,16 +65,13 @@ public class Main {
             log.log(Level.SEVERE, "Fail parse options", e);
         } catch (IOException e) {
             log.log(Level.SEVERE, "Fail read config", e);
+        } catch (ParseException e) {
+            log.log(Level.SEVERE, "Fail date mapper", e);
         }
     }
 
-    private static Date dateMapper(String date) {
-        try {
-            return new SimpleDateFormat("dd.MM.yyyy").parse(date);
-        } catch (ParseException e) {
-            log.log(Level.SEVERE, "Fail date mapper", e);
-            return new Date();
-        }
+    private static Date dateMapper(String date) throws ParseException {
+        return new SimpleDateFormat("dd.MM.yyyy").parse(date);
     }
 
     private static void saveFile(JSONObject json, String nameFile) {
