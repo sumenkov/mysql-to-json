@@ -7,81 +7,131 @@ import ru.sumenkov.mysqltojson.model.InitialModel;
 import java.util.*;
 
 public class JsonMapperImpl implements JsonMapper {
+    HashMap<Object, Object> result = new HashMap<>();
+    Date dt1;
+    Integer ptpId, cnt, qCnt;
+    String ptpName, routeNum;
+    Double tarif, prType, summ;
+
     @Override
     public JSONObject convertArray(List<InitialModel> allLines) {
-        HashMap<Date, HashMap<Integer, HashMap<Object, Object>>> result = new HashMap<>();
 
         for (InitialModel line: allLines) {
-            Date dt1 = line.getDt1();
-            Double prType = line.getPrType();
-            Integer ptpId = line.getPtpId();
-            Double tarif = line.getTarif();
-            String routeNum = line.getRouteNum();
+            dt1 = line.getDt1();
+            ptpId = line.getPtpId();
+            tarif = line.getTarif();
+            routeNum = line.getRouteNum();
+            prType = line.getPrType();
+            summ = line.getSumm();
+            cnt = line.getCnt();
+            qCnt = line.getQCnt();
+            ptpName = line.getPtpName();
 
             if (!result.containsKey(dt1)) {
-                HashMap<Integer, HashMap<Object, Object>> averageLevel = new HashMap<>();
-                averageLevel.put(ptpId, new HashMap<>());
-                if (!averageLevel.get(ptpId).containsKey("ptpName"))
-                    averageLevel.get(ptpId).put("ptpName", line.getPtpName());
-                averageLevel.get(ptpId).put(tarif, new HashMap<>());
-                HashMap<Object, HashMap<Object, HashMap<Object, Object>>> lowerLevel = (HashMap<Object, HashMap<Object, HashMap<Object, Object>>>) averageLevel.get(ptpId).get(tarif);
-                lowerLevel.put(routeNum, lowerLevel(line));
-
-                result.put(line.getDt1(), averageLevel);
+                result.put(dt1, dt1Result());
             } else {
-                if (!result.get(dt1).containsKey(ptpId)) {
-                    result.get(dt1).put(ptpId, new HashMap<>());
-                    if (!result.get(dt1).get(ptpId).containsKey("ptpName"))
-                        result.get(dt1).get(ptpId).put("ptpName", line.getPtpName());
-                    result.get(dt1).get(ptpId).put(tarif, new HashMap<>());
-                    HashMap<Object, HashMap<Object, HashMap<Object, Object>>> lowerLevel = (HashMap<Object, HashMap<Object, HashMap<Object, Object>>>) result.get(dt1).get(ptpId).get(tarif);
-                    lowerLevel.put(routeNum, lowerLevel(line));
-                } else {
-                    if (!result.get(dt1).get(ptpId).containsKey(tarif)) {
-                        result.get(dt1).get(ptpId).put(tarif, new HashMap<>());
-                        HashMap<Object, HashMap<Object, HashMap<Object, Object>>> lowerLevel = (HashMap<Object, HashMap<Object, HashMap<Object, Object>>>) result.get(dt1).get(ptpId).get(tarif);
-                        lowerLevel.put(routeNum, lowerLevel(line));
-                    } else {
-                        HashMap<Object, HashMap<Object, Object>> lowerLevel = (HashMap<Object, HashMap<Object, Object>>) result.get(dt1).get(ptpId).get(tarif);
-                        if (!lowerLevel.containsKey(routeNum)) {
-                            lowerLevel.put(routeNum, new HashMap<>());
-                            lowerLevel = (HashMap<Object, HashMap<Object, Object>>) ((HashMap<?, ?>) result.get(dt1).get(ptpId).get(tarif)).get(routeNum);
-                            lowerLevel.put(prType, new HashMap<>());
-                            lowerLevel.get(prType).put("summ", line.getSumm());
-                            lowerLevel.get(prType).put("cnt", line.getCnt());
-                            lowerLevel.get(prType).put("qCnt", line.getQCnt());
-                        } else {
-                            lowerLevel = (HashMap<Object, HashMap<Object, Object>>) ((HashMap<?, ?>) result.get(dt1).get(ptpId).get(tarif)).get(routeNum);
-                            if (!lowerLevel.containsKey(prType)) {
-                                lowerLevel.put(prType, new HashMap<>());
-                                lowerLevel.get(prType).put("summ", line.getSumm());
-                                lowerLevel.get(prType).put("cnt", line.getCnt());
-                                lowerLevel.get(prType).put("qCnt", line.getQCnt());
-                            } else {
-                                Double summ = (Double) lowerLevel.get(prType).get("summ");
-                                int cnt = (int) lowerLevel.get(prType).get("cnt");
-                                int qCnt = (int) lowerLevel.get(prType).get("qCnt");
-
-                                lowerLevel.get(prType).put("summ", line.getSumm() + summ);
-                                lowerLevel.get(prType).put("cnt", line.getCnt() + cnt);
-                                lowerLevel.get(prType).put("qCnt", line.getQCnt() + qCnt);
-                            }
-                        }
-                    }
-                }
+                result.put(dt1, dt1Result(new HashMap<>((Map<?, ?>) result.get(dt1))));
             }
         }
         return new JSONObject(result);
     }
 
-    private HashMap<Object, HashMap<Object, Object>> lowerLevel(InitialModel line)  {
-        Double prType = line.getPrType();
-        HashMap<Object, HashMap<Object, Object>> lowerMap = new HashMap<>();
-        lowerMap.put(prType, new HashMap<>());
-        lowerMap.get(prType).put("summ", line.getSumm());
-        lowerMap.get(prType).put("cnt", line.getCnt());
-        lowerMap.get(prType).put("qCnt", line.getQCnt());
+    private HashMap<Object, Object> dt1Result() {
 
-        return lowerMap;
+        HashMap<Object, Object> hasDt1 = new HashMap<>();
+        hasDt1.put(ptpId, ptpIdResult());
+
+        return hasDt1;
+    }
+
+    private HashMap<Object, Object> dt1Result(HashMap<Object, Object> hasDt1) {
+
+        if (!hasDt1.containsKey(ptpId)) {
+            hasDt1.put(ptpId, ptpIdResult());
+        } else {
+            hasDt1.put(ptpId, ptpIdResult(new HashMap<>((Map<?, ?>) hasDt1.get(ptpId))));
+        }
+
+        return hasDt1;
+    }
+
+    private HashMap<Object, Object> ptpIdResult() {
+
+        HashMap<Object, Object> hasPtpId = new HashMap<>();
+        hasPtpId.put("ptpName", ptpName);
+        hasPtpId.put(tarif, tarifResult());
+
+        return hasPtpId;
+    }
+
+    private HashMap<Object, Object> ptpIdResult(HashMap<Object, Object> hasPtpId) {
+
+        if (!hasPtpId.containsKey(tarif)) {
+            hasPtpId.put(tarif, tarifResult());
+        } else {
+            hasPtpId.put(tarif, tarifResult(new HashMap<>((Map<?, ?>) hasPtpId.get(tarif))));
+        }
+
+        return hasPtpId;
+    }
+
+    private HashMap<Object, Object> tarifResult() {
+
+        HashMap<Object, Object> hasTarif = new HashMap<>();
+        hasTarif.put(routeNum, prTypeResult());
+
+        return hasTarif;
+    }
+
+    private HashMap<Object, Object> tarifResult(HashMap<Object, Object> hasTarif) {
+        if (!hasTarif.containsKey(routeNum)) {
+            hasTarif.put(routeNum, prTypeResult());
+        } else {
+            hasTarif.put(routeNum, prTypeResult(new HashMap<>((Map<?, ?>) hasTarif.get(routeNum))));
+        }
+
+        return hasTarif;
+    }
+
+    private HashMap<Object, Object> prTypeResult()  {
+
+        HashMap<Object, Object> newHasMap = new HashMap<>();
+        newHasMap.put(prType, scqResult());
+
+        return newHasMap;
+    }
+
+    private HashMap<Object, Object> prTypeResult(HashMap<Object, Object> hasRouteNum)  {
+
+        if (!hasRouteNum.containsKey(prType)) {
+            hasRouteNum.put(prType, scqResult());
+        } else {
+            hasRouteNum.put(prType, scqResult(new HashMap<>((Map<?, ?>) hasRouteNum.get(prType))));
+        }
+
+        return hasRouteNum;
+    }
+
+    private HashMap<Object, Object> scqResult() {
+
+        HashMap<Object, Object> hasSCQ = new HashMap<>();
+        hasSCQ.put("summ", summ);
+        hasSCQ.put("cnt", cnt);
+        hasSCQ.put("qCnt", qCnt);
+
+        return hasSCQ;
+    }
+
+    private HashMap<Object, Object> scqResult(HashMap<Object, Object> hasSCQ) {
+
+        Double s = (Double) hasSCQ.get("summ");
+        int c = (int) hasSCQ.get("cnt");
+        int q = (int) hasSCQ.get("qCnt");
+
+        hasSCQ.put("summ", s + summ);
+        hasSCQ.put("cnt", c + cnt);
+        hasSCQ.put("qCnt", q + qCnt);
+
+        return hasSCQ;
     }
 }
