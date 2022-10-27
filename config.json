@@ -1,8 +1,8 @@
 {
   "nameSQLServer": "MySQL",
-  "ip": "10.195.70.16",
+  "ip": "192.168.0.1",
   "port": "3306",
-  "db": "db_trday",
-  "login": "reading",
-  "password": "QfxWjbLD"
+  "db": "dbName",
+  "login": "login",
+  "password": "password"
 }
