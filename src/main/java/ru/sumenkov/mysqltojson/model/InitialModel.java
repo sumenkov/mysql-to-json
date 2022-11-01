@@ -6,7 +6,7 @@ public class InitialModel {
     // описываем только те атрибуты, которые будем использовать (вся таблица не нужна)
     private String ptpName; // 1 column
     private int ptpId; // 2 column
-    private Date dt1; // 4 column
+    private Date dt; // 4 column
     private String routeNum; // 7 column
     private double tarif; // 9 column
     private double prType; // 10 column
@@ -17,11 +17,11 @@ public class InitialModel {
     public InitialModel() {
     }
 
-    public InitialModel(String ptpName, int ptpId, Date dt1, String routeNum, double tarif, double prType, double summ,
+    public InitialModel(String ptpName, int ptpId, Date dt, String routeNum, double tarif, double prType, double summ,
                         int cnt, int qCnt) {
         this.ptpName = ptpName;
         this.ptpId = ptpId;
-        this.dt1 = dt1;
+        this.dt = dt;
         this.routeNum = routeNum;
         this.tarif = tarif;
         this.prType = prType;
@@ -47,12 +47,12 @@ public class InitialModel {
         this.ptpId = ptpId;
     }
 
-    public Date getDt1() {
-        return dt1;
+    public Date getDt() {
+        return dt;
     }
 
-    public void setDt1(Date dt1) {
-        this.dt1 = dt1;
+    public void setDt(Date dt) {
+        this.dt = dt;
     }
 
     public String getRouteNum() {

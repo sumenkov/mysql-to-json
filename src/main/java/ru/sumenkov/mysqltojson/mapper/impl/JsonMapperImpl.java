@@ -8,7 +8,7 @@ import java.util.*;
 
 public class JsonMapperImpl implements JsonMapper {
     HashMap<Object, Object> result = new HashMap<>();
-    Date dt1;
+    Date dt;
     Integer ptpId, cnt, qCnt;
     String ptpName, routeNum;
     Double tarif, prType, summ;
@@ -17,7 +17,7 @@ public class JsonMapperImpl implements JsonMapper {
     public JSONObject convertArray(List<InitialModel> allLines) {
 
         for (InitialModel line: allLines) {
-            dt1 = line.getDt1();
+            dt = line.getDt();
             ptpId = line.getPtpId();
             tarif = line.getTarif();
             routeNum = line.getRouteNum();
@@ -27,10 +27,10 @@ public class JsonMapperImpl implements JsonMapper {
             qCnt = line.getQCnt();
             ptpName = line.getPtpName();
 
-            if (!result.containsKey(dt1)) {
-                result.put(dt1, dt1Result());
+            if (!result.containsKey(dt)) {
+                result.put(dt, dt1Result());
             } else {
-                result.put(dt1, dt1Result(new HashMap<>((Map<?, ?>) result.get(dt1))));
+                result.put(dt, dt1Result(new HashMap<>((Map<?, ?>) result.get(dt))));
             }
         }
         return new JSONObject(result);

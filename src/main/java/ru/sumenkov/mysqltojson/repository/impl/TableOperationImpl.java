@@ -32,18 +32,18 @@ public class TableOperationImpl implements TableOperation {
 
     @Override
     public List<InitialModel> readOneDay(Date date) {
-        String query = String.format("SELECT %s FROM `%d` WHERE dt1='%s'", COLUMNS, getYear(date), getSfd(date));
+        String query = String.format("SELECT %s FROM `%d` WHERE dt='%s'", COLUMNS, getYear(date), getSfd(date));
         return parseAll(query);
     }
     @Override
     public List<InitialModel> readOneMonth(Date date) {
-        String query = String.format("SELECT %s FROM `%d` WHERE dt1 LIKE '%s'", COLUMNS, getYear(date),
+        String query = String.format("SELECT %s FROM `%d` WHERE dt LIKE '%s'", COLUMNS, getYear(date),
                 new SimpleDateFormat("yyyy-MM-%").format(date));
         return parseAll(query);
     }
     @Override
     public List<InitialModel> readDatePeriod(Date dateStart, Date dateEnd) {
-        String query = String.format("SELECT %s FROM `%d` WHERE dt1 BETWEEN '%s' and '%s'",
+        String query = String.format("SELECT %s FROM `%d` WHERE dt BETWEEN '%s' and '%s'",
                 COLUMNS, getYear(dateStart), getSfd(dateStart), getSfd(dateEnd));
         return parseAll(query);
     }
