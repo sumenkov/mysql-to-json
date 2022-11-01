@@ -17,7 +17,7 @@ public class TableOperationImpl implements TableOperation {
     private static final Logger LOG = Logger.getLogger(TableOperationImpl.class.getName());
     private final Connection conn;
     private  final DataMapper dataMapper;
-    private final String COLUMNS = "PTP_NAME,PTP_ID, DT1, ROUTE_NUM, TARIF, PRTYPE, SUMM, CNT, QCNT";
+    private final String COLUMNS = "PTP_NAME,PTP_ID, DT, ROUTE_NUM, TARIF, PRTYPE, SUMM, CNT, QCNT";
 
     public TableOperationImpl(Connection conn, DataMapper dataMapper) {
         this.conn = conn;
